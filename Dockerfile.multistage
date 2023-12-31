@@ -1,0 +1,16 @@
+FROM golang:alpine3.16 AS builder
+WORKDIR /app
+RUN export GO111MODULE=on && \
+    go mod init example.com/m/v2
+COPY main.go ./
+RUN go build -o ./server
+
+FROM alpine:latest
+WORKDIR /app
+CMD ["/app/server"]
+
+EXPOSE 8000
+COPY --from=builder /app/server /app/server
+
+
+
